@@ -83,9 +83,7 @@ won't be able to use them.
             self._visual_versions = visual_versions
         else:
             self._visual_versions = split_colon_env("CONAN_VISUAL_VERSIONS")
-            if not self._visual_versions and not mingw_configurations and not get_mingw_config_from_env():
-                self._visual_versions = default_visual_versions
-            elif mingw_configurations or get_mingw_config_from_env():
+            if not self._visual_versions:
                 self._visual_versions = []
 
         self._visual_runtimes = (visual_runtimes or split_colon_env("CONAN_VISUAL_RUNTIMES") or
@@ -113,7 +111,11 @@ won't be able to use them.
                                           get_mingw_package_reference(), self._archs,
                                           shared_option_name, self._build_types, ref)
             else:
-                builds = []
+                builds = get_linux_gcc_builds(self._gcc_versions, self._archs, shared_option_name,
+                                              pure_c, self._build_types, ref))
+                builds.extend(get_linux_clang_builds(self._clang_versions, self._archs,
+                                                     shared_option_name, pure_c, self._build_types,
+                                                     ref))
             builds.extend(get_visual_builds(self._visual_versions, self._archs,
                                             self._visual_runtimes, shared_option_name,
                                             dll_with_static_runtime, self._vs10_x86_64_enabled,
