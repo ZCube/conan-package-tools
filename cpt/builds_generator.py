@@ -112,7 +112,7 @@ won't be able to use them.
                                           shared_option_name, self._build_types, ref)
             else:
                 builds = get_linux_gcc_builds(self._gcc_versions, self._archs, shared_option_name,
-                                              pure_c, self._build_types, ref))
+                                              pure_c, self._build_types, ref)
                 builds.extend(get_linux_clang_builds(self._clang_versions, self._archs,
                                                      shared_option_name, pure_c, self._build_types,
                                                      ref))
