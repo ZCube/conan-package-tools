@@ -113,7 +113,7 @@ won't be able to use them.
             else:
                 builds = get_linux_gcc_builds(self._gcc_versions, self._archs, shared_option_name,
                                               pure_c, self._build_types, ref)
-                builds.extend(get_linux_clang_builds(self._clang_versions, self._archs,
+                builds.extend(get_msys2_clang_builds(self._clang_versions, self._archs,
                                                      shared_option_name, pure_c, self._build_types,
                                                      ref))
             builds.extend(get_visual_builds(self._visual_versions, self._archs,
@@ -342,7 +342,6 @@ def get_linux_gcc_builds(gcc_versions, archs, shared_option_name, pure_c, build_
                                              None, None, reference))
     return ret
 
-
 def get_linux_clang_builds(clang_versions, archs, shared_option_name, pure_c, build_types,
                            reference=None):
     ret = []
@@ -368,6 +367,32 @@ def get_linux_clang_builds(clang_versions, archs, shared_option_name, pure_c, bu
                                              "libstdc++", None, None, reference))
                         ret.append(get_build("clang", arch, build_type_it, clang_version,
                                              "libc++", None, None, reference))
+                    else:
+                        ret.append(get_build("clang", arch, build_type_it, clang_version,
+                                             None, None, None, reference))
+    return ret
+
+def get_msys2_clang_builds(clang_versions, archs, shared_option_name, pure_c, build_types,
+                           reference=None):
+    ret = []
+    # Not specified compiler or compiler version, will use the auto detected
+    for clang_version in clang_versions:
+        for arch in archs:
+            if shared_option_name:
+                for shared in [True, False]:
+                    for build_type_it in build_types:
+                        if not pure_c:
+                            ret.append(get_build("clang", arch, build_type_it, clang_version,
+                                                 "libstdc++", shared_option_name, shared,
+                                                 reference))
+                        else:
+                            ret.append(get_build("clang", arch, build_type_it, clang_version,
+                                                 None, shared_option_name, shared, reference))
+            else:
+                for build_type_it in build_types:
+                    if not pure_c:
+                        ret.append(get_build("clang", arch, build_type_it, clang_version,
+                                             "libstdc++", None, None, reference))
                     else:
                         ret.append(get_build("clang", arch, build_type_it, clang_version,
                                              None, None, None, reference))
